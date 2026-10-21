@@ -136,6 +136,7 @@ The app keeps SQLite for local development and uses PostgreSQL in production. Ve
 2. Create a hosted PostgreSQL database (for example, Neon) and set these Vercel environment variables for Production:
    - `DATABASE_URL`: the pooled Neon connection string used by the app and migrations.
    - `JWT_SECRET`: a unique, random secret with at least 32 bytes of entropy.
-3. Deploy. The first build creates the production tables by applying `prisma/migrations`.
+3. Apply the PostgreSQL migration from `prisma/migrations` to the Neon database before using database-backed features. Vercel builds do not run migrations because its build workers may not be able to reach a Neon compute endpoint while it is waking from idle.
+4. Deploy. Vercel generates the PostgreSQL Prisma client and builds the app; migrations are handled separately from the build.
 
 Do not commit `.env` or paste production secrets into source files. `.gitignore` excludes local environment files and databases. No Twelve Data or Finnhub keys are needed for the default Binance/Yahoo market feeds.
