@@ -134,8 +134,7 @@ The app keeps SQLite for local development and uses PostgreSQL in production. Ve
 
 1. Push the project to a GitHub repository and import it into Vercel.
 2. Create a hosted PostgreSQL database (for example, Neon) and set these Vercel environment variables for Production:
-   - `DATABASE_URL`: the pooled Neon connection string used by the app.
-   - `DIRECT_URL`: the direct Neon connection string used for schema migrations.
+   - `DATABASE_URL`: the pooled Neon connection string used by the app and migrations.
    - `JWT_SECRET`: a unique, random secret with at least 32 bytes of entropy.
 3. Deploy. The first build creates the production tables by applying `prisma/migrations`.
 
