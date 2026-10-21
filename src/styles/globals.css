@@ -1,0 +1,297 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+/* =========================================================
+   DARK THEME (default)
+   ========================================================= */
+:root,
+[data-theme="dark"] {
+  --bg-primary: #07090e;
+  --bg-secondary: #0d111a;
+  --bg-surface: #131926;
+  --bg-surface-hover: #1b2336;
+  --bg-glass: rgba(19, 25, 38, 0.85);
+
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-active: rgba(0, 229, 255, 0.35);
+
+  --text-primary: #f0f4fc;
+  --text-secondary: #8c9cb8;
+  --text-muted: #53627d;
+
+  --accent-cyan: #00e5ff;
+  --accent-cyan-glow: rgba(0, 229, 255, 0.2);
+
+  --bullish: #00e676;
+  --bullish-glow: rgba(0, 230, 118, 0.25);
+  --bullish-bg: rgba(0, 230, 118, 0.1);
+
+  --bearish: #ff1744;
+  --bearish-glow: rgba(255, 23, 68, 0.25);
+  --bearish-bg: rgba(255, 23, 68, 0.1);
+
+  --warning: #ffab00;
+  --warning-bg: rgba(255, 171, 0, 0.12);
+
+  --equilibrium: #ffd600;
+  --silver-bullet: #00e5ff;
+
+  /* Chart colours exposed for JS reading */
+  --chart-bg: #07090e;
+  --chart-text: #8c9cb8;
+  --chart-grid: rgba(255, 255, 255, 0.04);
+  --chart-border: rgba(255, 255, 255, 0.08);
+  --chart-crosshair: rgba(0, 229, 255, 0.4);
+  --chart-label-bg: #131926;
+  --chart-candle-up: #00e676;
+  --chart-candle-down: #ff1744;
+  --chart-volume-up: rgba(0, 230, 118, 0.35);
+  --chart-volume-down: rgba(255, 23, 68, 0.35);
+  --chart-ohlc-bg: rgba(11, 14, 20, 0.85);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 25px var(--accent-cyan-glow);
+
+  /* Theme toggle icon display */
+  --theme-icon-sun: none;
+  --theme-icon-moon: block;
+}
+
+/* =========================================================
+   LIGHT THEME
+   ========================================================= */
+[data-theme="light"] {
+  --bg-primary: #f3f6fb;
+  --bg-secondary: #ffffff;
+  --bg-surface: #edf1f8;
+  --bg-surface-hover: #e0e7f2;
+  --bg-glass: rgba(255, 255, 255, 0.92);
+
+  --border-color: rgba(0, 0, 0, 0.10);
+  --border-active: rgba(0, 120, 210, 0.45);
+
+  --text-primary: #0d1321;
+  --text-secondary: #445572;
+  --text-muted: #8899b4;
+
+  --accent-cyan: #0078d2;
+  --accent-cyan-glow: rgba(0, 120, 210, 0.18);
+
+  --bullish: #00875a;
+  --bullish-glow: rgba(0, 135, 90, 0.2);
+  --bullish-bg: rgba(0, 135, 90, 0.08);
+
+  --bearish: #c9000f;
+  --bearish-glow: rgba(201, 0, 15, 0.2);
+  --bearish-bg: rgba(201, 0, 15, 0.08);
+
+  --warning: #c77000;
+  --warning-bg: rgba(199, 112, 0, 0.1);
+
+  --equilibrium: #b8860b;
+  --silver-bullet: #0078d2;
+
+  /* Chart colours for light mode */
+  --chart-bg: #f9fafc;
+  --chart-text: #445572;
+  --chart-grid: rgba(0, 0, 0, 0.04);
+  --chart-border: rgba(0, 0, 0, 0.10);
+  --chart-crosshair: rgba(0, 120, 210, 0.5);
+  --chart-label-bg: #ffffff;
+  --chart-candle-up: #00875a;
+  --chart-candle-down: #c9000f;
+  --chart-volume-up: rgba(0, 135, 90, 0.35);
+  --chart-volume-down: rgba(201, 0, 15, 0.35);
+  --chart-ohlc-bg: rgba(255, 255, 255, 0.90);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 0 18px var(--accent-cyan-glow);
+
+  --theme-icon-sun: block;
+  --theme-icon-moon: none;
+}
+
+/* =========================================================
+   RESET & BASE
+   ========================================================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* =========================================================
+   THEME TRANSITION — smooth colour swap on all elements
+   ========================================================= */
+*, *::before, *::after {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease, box-shadow 0.2s ease;
+}
+/* Disable transition on fast interactive elements to avoid lag */
+button, a, input, select {
+  transition: background-color 0.12s ease, border-color 0.12s ease, color 0.1s ease,
+              box-shadow 0.12s ease, transform 0.1s ease, opacity 0.1s ease;
+}
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* =========================================================
+   UTILITIES
+   ========================================================= */
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+.glass-panel {
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  cursor: pointer;
+  user-select: none;
+}
+.btn:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--text-muted);
+}
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--accent-cyan);
+  color: #ffffff;
+  border-color: var(--accent-cyan);
+  font-weight: 600;
+}
+[data-theme="dark"] .btn-primary { color: #07090e; }
+.btn-primary:hover {
+  opacity: 0.88;
+  box-shadow: 0 0 12px var(--accent-cyan-glow);
+}
+
+.btn-active {
+  background: rgba(0, 120, 210, 0.1);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+}
+[data-theme="dark"] .btn-active {
+  background: rgba(0, 229, 255, 0.12);
+}
+
+/* Theme Toggle Button */
+.btn-theme {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+.btn-theme:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  box-shadow: 0 0 8px var(--accent-cyan-glow);
+}
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.badge-bullish  { background: var(--bullish-bg);  color: var(--bullish);  border: 1px solid rgba(0, 135, 90, 0.3); }
+.badge-bearish  { background: var(--bearish-bg);  color: var(--bearish);  border: 1px solid rgba(201, 0, 15, 0.3); }
+.badge-neutral  { background: rgba(128,128,128,0.08); color: var(--text-secondary); border: 1px solid var(--border-color); }
+.badge-warning  { background: var(--warning-bg);  color: var(--warning);  border: 1px solid rgba(199,112,0,0.3); }
+.badge-cyan     { background: var(--accent-cyan-glow); color: var(--accent-cyan); border: 1px solid var(--border-active); }
+
+[data-theme="dark"] .badge-bullish { border-color: rgba(0, 230, 118, 0.3); }
+[data-theme="dark"] .badge-bearish { border-color: rgba(255, 23, 68, 0.3); }
+[data-theme="dark"] .badge-warning { border-color: rgba(255, 171, 0, 0.3); }
+
+/* =========================================================
+   PULSE / ANIMATIONS
+   ========================================================= */
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bullish);
+  box-shadow: 0 0 8px var(--bullish);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%   { transform: scale(0.95); opacity: 0.8; }
+  50%  { transform: scale(1.2);  opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+/* live ticker update flash */
+@keyframes priceFlashGreen {
+  0%   { color: var(--bullish); }
+  100% { color: inherit; }
+}
+@keyframes priceFlashRed {
+  0%   { color: var(--bearish); }
+  100% { color: inherit; }
+}
+.price-flash-up   { animation: priceFlashGreen 0.6s ease forwards; }
+.price-flash-down { animation: priceFlashRed   0.6s ease forwards; }

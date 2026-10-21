@@ -1,0 +1,150 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  settings     UserSettings?
+  drawings     UserDrawing[]
+  paperTrades  PaperTrade[]
+  mt5Trades    Mt5Trade[]
+}
+
+model UserSettings {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  selectedInstrument    String   @default("XAUUSD")
+  selectedTimeframe     String   @default("5m")
+  enabledInstruments    String   @default("[\"XAUUSD\",\"XAGUSD\",\"EURUSD\",\"BTCUSD\"]")
+  overlaySettings       String   @default("{\"fvg\":true,\"ifvg\":true,\"cisd\":true,\"sweeps\":true,\"orderBlocks\":true,\"displacement\":true,\"premiumDiscount\":true,\"silverBullet\":true,\"htfContext\":true}")
+  signalMarkerStyle     String   @default("detailed") // simple, detailed, compact
+  entryModel            String   @default("silver_bullet") // silver_bullet, sweep_mss, ifvg_inversion
+  strictnessMode        String   @default("standard") // standard, strict
+  slTpSettings          String   @default("{\"slType\":\"structural\",\"tpType\":\"liquidity_or_rr\",\"minRR\":2.0}")
+  htfTimeframe          String   @default("1h")
+  marketDirectionMethod String   @default("ict_structure") // swing, ict_structure, structure_liquidity
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model UserDrawing {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  instrument String
+  timeframe  String
+  toolType   String // trendline, horizontal_line, vertical_line, ray, rectangle, fibonacci, long_position, short_position, text
+  points     String // JSON representation of coordinates [{time, price}]
+  properties String // JSON styling, colors, labels, R:R params
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId, instrument, timeframe])
+}
+
+model SignalRecord {
+  id                 String    @id @default(cuid())
+  signalId           String    @unique // deterministic hash (instrument_timeframe_timestamp_direction)
+  instrument         String
+  timeframe          String
+  direction          String // BUY, SELL
+  entryPrice         Float
+  stopLoss           Float
+  takeProfit         Float
+  riskReward         Float
+  confirmationScore  Int // 0 - 100
+  entryModel         String
+  strictnessMode     String
+  htfDirection       String? // BULLISH, BEARISH, NEUTRAL
+  indicators         String // JSON: details of FVG, OB, Sweeps, Displacement, Session
+  explanation        String
+  status             String    @default("PENDING") // PENDING, ACTIVE, WIN, LOSS, AMBIGUOUS, CANCELLED
+  isHistorical       Boolean   @default(false)
+  timestampNy        String
+  timestampIst       String
+  candleTimestamp    Int // Unix timestamp in seconds
+  entryTimestamp     Int?
+  exitTimestamp      Int?
+  outcomeR           Float?
+  dataSource         String    @default("primary")
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([instrument, timeframe, candleTimestamp])
+  @@index([status])
+}
+
+model PaperTrade {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  signalId   String?
+  instrument String
+  direction  String // BUY, SELL
+  entryPrice Float
+  stopLoss   Float
+  takeProfit Float
+  entryTime  DateTime  @default(now())
+  exitTime   DateTime?
+  exitPrice  Float?
+  status     String    @default("OPEN") // OPEN, CLOSED, CANCELLED
+  outcome    String? // WIN, LOSS, BREAKEVEN, AMBIGUOUS
+  pnlR       Float?
+  notes      String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([userId, instrument])
+}
+
+model Mt5Trade {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ticket        String // MT5 ticket number
+  symbol        String
+  tradeType     String // BUY, SELL
+  volume        Float
+  openTime      DateTime
+  openPrice     Float
+  closeTime     DateTime?
+  closePrice    Float?
+  sl            Float?
+  tp            Float?
+  commission    Float?    @default(0)
+  swap          Float?    @default(0)
+  profit        Float
+  revengeFlag   Boolean   @default(false)
+  revengeReason String?
+  importedAt    DateTime  @default(now())
+
+  @@unique([userId, ticket])
+  @@index([userId, symbol])
+}
+
+model EconomicEventCache {
+  id          String   @id @default(cuid())
+  externalId  String   @unique
+  title       String
+  country     String
+  currency    String
+  impact      String // High, Medium, Low
+  eventTime   DateTime
+  forecast    String?
+  previous    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([currency, impact, eventTime])
+}
