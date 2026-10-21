@@ -96,6 +96,7 @@ export default function DashboardPage() {
   const initialLoadDoneRef = useRef(false);
   const settingsLoadedRef = useRef(false);
   const primaryFetchSequenceRef = useRef(0);
+  const primaryFetchInFlightRef = useRef<{ key: string; sequence: number } | null>(null);
 
   // 1. Fetch Auth Profile & Saved Settings
   useEffect(() => {
@@ -227,7 +228,13 @@ export default function DashboardPage() {
 
   // 5. Load Primary Candlestick Data & Signals
   const fetchPrimaryChartAndSignals = useCallback(async () => {
+    const requestKey = [selectedInstrument, selectedTimeframe, entryModel, strictnessMode, htfBias].join(':');
+    // Avoid overlapping identical polls. If a provider takes longer than the
+    // polling interval, keep its response instead of cancelling it every 2s.
+    if (primaryFetchInFlightRef.current?.key === requestKey) return;
+
     const requestSequence = ++primaryFetchSequenceRef.current;
+    primaryFetchInFlightRef.current = { key: requestKey, sequence: requestSequence };
     try {
       // Fetch Candles
       const candleRes = await fetch(`/api/market-data?instrument=${selectedInstrument}&timeframe=${selectedTimeframe}`);
@@ -301,6 +308,10 @@ export default function DashboardPage() {
         status: 'disconnected',
         message: err instanceof Error ? err.message : 'Market data request failed'
       }));
+    } finally {
+      if (primaryFetchInFlightRef.current?.sequence === requestSequence) {
+        primaryFetchInFlightRef.current = null;
+      }
     }
   }, [selectedInstrument, selectedTimeframe, entryModel, strictnessMode, htfBias]);
 
